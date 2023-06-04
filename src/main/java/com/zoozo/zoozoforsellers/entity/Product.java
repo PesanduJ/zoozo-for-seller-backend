@@ -1,6 +1,7 @@
 package com.zoozo.zoozoforsellers.entity;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,4 +29,9 @@ public class Product {
     private float productValue;
 
     private float commission;
+
+    private String imageKey; // AWS S3 image key
+
+    @Transient
+    private MultipartFile imageFile; // Transient field for image file
 }

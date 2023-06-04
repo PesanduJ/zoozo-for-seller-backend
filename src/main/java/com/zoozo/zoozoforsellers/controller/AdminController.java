@@ -1,21 +1,22 @@
 package com.zoozo.zoozoforsellers.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zoozo.zoozoforsellers.entity.Orders;
 import com.zoozo.zoozoforsellers.entity.Product;
 import com.zoozo.zoozoforsellers.entity.Sales;
 import com.zoozo.zoozoforsellers.entity.User;
 import com.zoozo.zoozoforsellers.repository.ProductRepository;
-import com.zoozo.zoozoforsellers.service.OrdersService;
-import com.zoozo.zoozoforsellers.service.ProductService;
-import com.zoozo.zoozoforsellers.service.SalesService;
-import com.zoozo.zoozoforsellers.service.UserService;
+import com.zoozo.zoozoforsellers.service.*;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -43,6 +44,8 @@ public class AdminController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private ImageService imageService;
 
 
     //ADMIN FUNCTIONS
@@ -87,18 +90,56 @@ public class AdminController {
 
     //PRODUCT FUNCTIONS
     @PostMapping("/addProduct")
-    public Product addNewProduct(@RequestBody Product product){
-        return productService.addProduct(product);
+    public ResponseEntity<String> addNewProduct(@RequestParam("file") MultipartFile file, @RequestParam("product") String productJson) throws IOException {
+
+        try{
+            // Parse the productJson string into a Product object using a JSON parser
+            ObjectMapper objectMapper = new ObjectMapper();
+            Product product = objectMapper.readValue(productJson, Product.class);
+
+            // Handle the file upload and get the image key
+            String imageKey = imageService.saveImage(file);
+
+            // Update the Product object with the image key
+            product.setImageKey(imageKey);
+
+            // Save the product
+            productService.addProduct(product);
+
+            return ResponseEntity.ok("Product created successfully");
+
+        } catch (IOException e){
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save product");
+        }
+
     }
 
     @GetMapping("/product/{productCode}")
-    public Product getProductById(@PathVariable String productCode){
-        return productService.getProductById(productCode);
+    public ResponseEntity<Product> getProductById(@PathVariable String productCode){
+        Product product = productService.getProductById(productCode);
+        if(product != null){
+            String imageKey = product.getImageKey();
+            String imageUrl = "https://zoozoo-product-images.s3.ap-south-1.amazonaws.com/" + imageKey;
+            product.setImageKey(imageUrl);
+            return ResponseEntity.ok(product);
+        }else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/allProducts")
     public List<Product> getAllProducts(){
-        return productService.getAllProducts();
+        List<Product> products = productService.getAllProducts();
+
+        // Generate image URLs for each product
+        for (Product product : products) {
+            String imageKey = product.getImageKey();
+            String imageUrl = "https://zoozoo-product-images.s3.ap-south-1.amazonaws.com/" + imageKey;
+            product.setImageKey(imageUrl);
+        }
+
+        return products;
     }
 
     @PutMapping("/product/{productCode}")

@@ -2,11 +2,12 @@ package com.zoozo.zoozoforsellers.service;
 
 import com.zoozo.zoozoforsellers.entity.Product;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
 
-    Product addProduct(Product product);
+    Product addProduct(Product product) throws IOException;
 
     Product getProductById(String productCode);
 
