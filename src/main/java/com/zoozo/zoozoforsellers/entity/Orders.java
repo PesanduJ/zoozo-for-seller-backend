@@ -1,11 +1,15 @@
 package com.zoozo.zoozoforsellers.entity;
 
+
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
 
 
 @AllArgsConstructor
@@ -31,6 +35,13 @@ public class Orders {
 
     private String sellerId;
 
+    private  float commission;
+
+    private LocalDate orderDate;
+
     @Lob
     private String customerDetails;
+
+    @Lob
+    private String trackingDetails;
 }

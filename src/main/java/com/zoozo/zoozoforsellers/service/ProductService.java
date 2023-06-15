@@ -11,6 +11,8 @@ public interface ProductService {
 
     Product getProductById(String productCode);
 
+
+
     List<Product> getAllProducts();
 
     Product updateProductById(Product product);

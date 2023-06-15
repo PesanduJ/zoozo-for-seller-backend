@@ -43,4 +43,9 @@ public class OrdersServiceImpl implements OrdersService{
         ordersRepository.deleteById(id);
     }
 
+    @Override
+    public void removeOrder(Long id) {
+        ordersRepository.deleteById(id);
+    }
+
 }

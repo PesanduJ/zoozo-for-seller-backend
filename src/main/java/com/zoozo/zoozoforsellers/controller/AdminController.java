@@ -151,7 +151,6 @@ public class AdminController {
         productUpdated.setSellingPrice(product.getSellingPrice());
         productUpdated.setInStock(product.getInStock());
         productUpdated.setProductValue(product.getProductValue());
-        productUpdated.setCommission(product.getCommission());
 
         return productService.updateProductById(productUpdated);
     }
@@ -173,9 +172,29 @@ public class AdminController {
         return ordersService.updateOrderById(ordersUpdated);
     }
 
+    @PutMapping("/order/tracking/{id}")
+    public Orders updatedTrackingDetailsById(@PathVariable Long id, @RequestParam String trackingDetails){
+        Orders ordersUpdated = ordersService.getOrdersById(id);
+        ordersUpdated.setTrackingDetails(trackingDetails);
+
+        return ordersService.updateOrderById(ordersUpdated);
+    }
+
     @GetMapping("/allOrders")
     public List<Orders> getAllOrders(){
         return ordersService.getAllOrders();
+    }
+
+
+    @GetMapping("/order/{id}")
+    public Orders getOrderById(@PathVariable Long id){
+        return ordersService.getOrdersById(id);
+    }
+
+
+    @DeleteMapping("/order/{id}")
+    public void removeOrderById(@PathVariable Long id){
+        ordersService.removeOrder(id);
     }
 
 
@@ -193,7 +212,9 @@ public class AdminController {
         sales.setStatus("COMPLETED");
         sales.setQuantity(selectedOrder.getQuantity());
         sales.setSellerId(selectedOrder.getSellerId());
+        sales.setCommission(selectedOrder.getCommission());
         sales.setSoldDate(LocalDate.now());
+        sales.setOrderId(selectedOrder.getId());
 
         //removing order from order table
         ordersService.completeOrder(id);

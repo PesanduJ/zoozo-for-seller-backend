@@ -12,11 +12,15 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService{
 
-    @Autowired
-    private ProductRepository productRepository;
 
-    @Autowired
-    private ImageService imageService;
+    private final ProductRepository productRepository;
+    private final ImageService imageService;
+
+
+    public ProductServiceImpl(ImageService imageService, ProductRepository productRepository) {
+        this.imageService = imageService;
+        this.productRepository = productRepository;
+    }
 
     @Override
     public Product addProduct(Product product) throws IOException {
@@ -32,6 +36,8 @@ public class ProductServiceImpl implements ProductService{
     public Product getProductById(String productCode) {
         return productRepository.findById(productCode).get();
     }
+
+
 
     @Override
     public List<Product> getAllProducts() {

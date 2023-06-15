@@ -18,4 +18,6 @@ public interface OrdersService {
     List<Orders> getAllOrdersBySellerId(String sellerId);
 
     void completeOrder(Long id);
+
+    void removeOrder(Long id);
 }

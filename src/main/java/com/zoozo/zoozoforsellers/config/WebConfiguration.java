@@ -57,6 +57,8 @@ public class WebConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/api/admin/allOrders")
                 .permitAll()
+                .antMatchers("/api/user/allOrders")
+                .permitAll()
                 .antMatchers("/api/user/user/**")
                 .permitAll()
                 .antMatchers("/api/user/pointsBySeller")

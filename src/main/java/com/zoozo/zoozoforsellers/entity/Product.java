@@ -28,8 +28,6 @@ public class Product {
 
     private float productValue;
 
-    private float commission;
-
     private String imageKey; // AWS S3 image key
 
     @Transient

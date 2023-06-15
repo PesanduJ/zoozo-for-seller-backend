@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -86,7 +87,7 @@ public class UserController {
 
     //ORDERS FUNCTIONS
     @PostMapping("/addOrder/{productCode}")
-    public Orders addOrder(@RequestParam int quantity, @PathVariable String productCode, @RequestParam String customerDetails){
+    public Orders addOrder(@RequestParam int quantity,@RequestParam float commission, @PathVariable String productCode, @RequestParam String customerDetails){
 
         //get current user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -105,7 +106,10 @@ public class UserController {
         orders.setStatus("PENDING");
         orders.setQuantity(quantity);
         orders.setSellerId(user.getNic());
+        orders.setCommission(commission);
+        orders.setOrderDate(LocalDate.now());
         orders.setCustomerDetails(customerDetails);
+        orders.setTrackingDetails("No Data Available Yet!");
 
         return ordersService.addOrder(orders);
     }

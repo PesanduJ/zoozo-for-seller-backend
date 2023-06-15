@@ -36,5 +36,9 @@ public class Sales {
 
     private String sellerId;
 
+    private  float commission;
+
     private LocalDate soldDate;
+
+    private Long orderId;
 }

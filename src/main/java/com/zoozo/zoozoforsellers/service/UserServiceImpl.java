@@ -25,12 +25,18 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAllByRole("USER");
+        List<User> users = userRepository.findAllByRole("USER");
+        List<User> bannedUsers = userRepository.findAllByRole("BANNED");
+        users.addAll(bannedUsers);
+        return users;
     }
 
     @Override
     public List<User> getAllAdmins() {
-        return userRepository.findAllByRole("ADMIN");
+        List<User> admins = userRepository.findAllByRole("ADMIN");
+        List<User> bannedAdmins = userRepository.findAllByRole("BANNED");
+        admins.addAll(bannedAdmins);
+        return admins;
     }
 
     @Override
